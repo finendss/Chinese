@@ -162,7 +162,22 @@ local Translations = {
     ["Character Aimbot"] = "角色自瞄",
     ["FOV Circle Radius"] = "FOV圆圈半径",
     ["FOV Circle Transparency"] = "FOV圆圈透明度",
-    ["Fov Circle Color"] = "FOV圆圈颜色"
+    ["Fov Circle Color"] = "FOV圆圈颜色",
+["Automatically block incoming attacks"] = "自动格挡来袭攻击",
+    ["Main"] = "主要",
+    ["Config"] = "配置",
+    ["Survivor Autoblock"] = "幸存者自动格挡",
+    ["Block Projectiles"] = "格挡抛射物",
+    ["Killer Autoblock"] = "杀手自动格挡",
+    ["Hitbox"] = "命中框",
+    ["Hitbox Distance"] = "命中框距离",
+    ["Autoblock Hitbox Multiplier"] = "自动格挡命中框倍数",
+    ["times"] = "倍",
+    ["Autoblock Hitbox Transparency"] = "自动格挡命中框透明度",
+    ["AB Hitbox Color"] = "自动格挡命中框颜色",
+    ["Hitbox Preview"] = "命中框预览",
+    ["Autoblock Characters"] = "自动格挡角色",
+    ["007n7"] = "007n7"
 }
 
 local function translateText(text)
