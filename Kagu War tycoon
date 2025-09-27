@@ -1,5 +1,4 @@
 local Translations = {
-local translations = {
     ["Money"] = "金钱",
     ["Auto Crate"] = "自动开箱",
     ["Auto Buy"] = "自动购买",
