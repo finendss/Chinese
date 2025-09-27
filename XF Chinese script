@@ -57,3 +57,18 @@ local Button = Tab:Button({
     loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/Chinese/refs/heads/main/H4X%20Chinese"))()
     end
 })
+
+local Tab = Window:Tab({
+    Title = "战争大亨(War tycoon)",
+    Icon = "door-open",
+    Locked = false,
+})
+
+local Button = Tab:Button({
+    Title = "Kagu Hub",
+    Desc = "挺好用的",
+    Locked = false,
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/Chinese/refs/heads/main/Kagu%20War%20tycoon"))()
+    end
+})
