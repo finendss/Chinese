@@ -72,3 +72,18 @@ local Button = Tab:Button({
     loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/Chinese/refs/heads/main/Kagu%20War%20tycoon"))()
     end
 })
+
+local Tab = Window:Tab({
+    Title = "被遗弃(Forsaken)",
+    Icon = "door-open",
+    Locked = false,
+})
+
+local Button = Tab:Button({
+    Title = "Fartsaken",
+    Desc = "好用的",
+    Locked = false,
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/Chinese/refs/heads/main/Fartsaken%20Chinese"))()
+    end
+})
