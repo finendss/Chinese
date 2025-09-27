@@ -1,6 +1,4 @@
 local Translations = {
-已将所有中文方括号【 】替换为英文方括号[ ]，修改后的文本如下：
-
 [“Azure Hub|Ink Game”]=“Azure Hub|墨水游戏“,
 [“Xenoz”]=“FIN Team 汉化”,
 [“RedLightGreenLight”]=“红灯绿灯”,
