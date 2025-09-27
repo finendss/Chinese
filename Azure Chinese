@@ -57,8 +57,8 @@ local Translations = {
     ["Anti ragdoll"] = "防布娃娃状态",
     ["Anti Stun"] = "防眩晕",
     ["Anti stun"] = "防眩晕"
-    ["Teleport To End"] =“传送至终点”
-    ["Teleport to the end"] =“传送到终点”
+    ["Teleport To End"] = "传送至终点"
+    ["Teleport to the end"] = "传送到终点"
 }
 
 local function translateText(text)
