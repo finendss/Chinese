@@ -34,15 +34,6 @@ local Button = Tab:Button({
     end
 })
 
-local Button = Tab:Button({
-    Title = "H4x-99夜汉化",
-    Desc = "有卡密但功能也多",
-    Locked = false,
-    Callback = function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XHnb/refs/heads/main/H4x%E6%B1%89%E5%8C%96"))()
-    end
-})
-
 local Tab = Window:Tab({
     Title = "森林99夜(Forest 99 Nights)",
     Icon = "door-open",
@@ -55,5 +46,14 @@ local Button = Tab:Button({
     Locked = false,
     Callback = function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/Chinese/refs/heads/main/Void%2099%20Nights"))()
+    end
+})
+
+local Button = Tab:Button({
+    Title = "H4x-99夜",
+    Desc = "有卡密但功能也多",
+    Locked = false,
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/Chinese/refs/heads/main/H4X%20Chinese"))()
     end
 })
