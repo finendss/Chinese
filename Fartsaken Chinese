@@ -50,7 +50,30 @@ local Translations = {
     ["Full Bright"] = "全亮",
     ["Self Effects"] = "自身效果",
     ["Princess Mode"] = "公主模式",
-    ["Field of View"] = "视野"
+    ["Field of View"] = "视野",
+["Fartsaken"] = "Fartsaken(FIN Team汉化)",
+    ["Home"] = "主页",
+    ["Visuals"] = "视觉",
+    ["玩家"] = "玩家",
+    ["Misc"] = "杂项",
+    ["Rage"] = "狂暴",
+    ["Aiming"] = "瞄准",
+    ["Auto Solve Generator and other generator stuff."] = "自动解决生成器及其他生成器功能",
+    ["Auto Generator Settings"] = "自动生成器设置",
+    ["Auto Solve Generator"] = "自动解决生成器",
+    ["Generator Solve Delay"] = "生成器解决延迟",
+    ["Seconds"] = "秒",
+    ["Generator Delay Randomness"] = "生成器延迟随机性",
+    ["Generator Helper"] = "生成器助手",
+    ["Generator Backgrounds"] = "生成器背景",
+    ["Background Video"] = "背景视频",
+    ["Subway Surfers"] = "地铁跑酷",
+    ["Video Volume"] = "视频音量",
+    ["Toggle"] = "切换",
+    ["Search"] = "搜索",
+    ["ESP and other visuals."] = "ESP及其他视觉功能",
+    ["Remove Health Glitch"] = "移除生命值故障",
+    ["Delete John Doe's Footprints"] = "删除无名氏的脚印"
 }
 
 local function translateText(text)
