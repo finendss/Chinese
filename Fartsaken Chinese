@@ -93,7 +93,31 @@ local Translations = {
     ["Regdoll"] = "布娃娃状态",
     ["Frontflip"] = "前空翻",
     ["Invisibility"] = "隐身",
-    ["Better Noli Controls"] = "更好的Noli控制"
+    ["Better Noli Controls"] = "更好的Noli控制",
+    ["Autoblock"] = "自动格挡",
+    ["Music"] = "音乐",
+    ["Round ended at:"] = "回合结束于：",
+    ["Options"] = "选项",
+    ["Angellameous functions and utilities."] = "Angellameous功能和实用程序",
+    ["General UI"] = "通用UI",
+    ["Streamer Mode"] = "直播模式",
+    ["Show Hidden Stats"] = "显示隐藏统计",
+    ["Delete Killer Only Walls"] = "删除仅杀手可见的墙壁",
+    ["Visibility"] = "可见性",
+    ["Visit Chat Visibility"] = "访问聊天可见性",
+    ["Anti Features"] = "反功能",
+    ["Anti Auto 404"] = "反自动404",
+    ["Anti Autoblock"] = "反自动格挡",
+    ["General"] = "通用",
+    ["UI"] = "用户界面",
+    ["UI Timer Position"] = "UI计时器位置",
+    ["TopBar Buttons"] = "顶部栏按钮",
+    ["Fake Block"] = "假格挡",
+    ["Device"] = "设备",
+    ["Spoof Device"] = "伪装设备",
+    ["PC"] = "电脑",
+    ["Mobile"] = "移动设备",
+    ["Console"] = "游戏主机"
 }
 
 local function translateText(text)
