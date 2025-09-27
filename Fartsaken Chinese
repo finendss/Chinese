@@ -74,7 +74,26 @@ local Translations = {
     ["Search"] = "搜索",
     ["ESP and other visuals."] = "ESP及其他视觉功能",
     ["Remove Health Glitch"] = "移除生命值故障",
-    ["Delete John Doe's Footprints"] = "删除无名氏的脚印"
+    ["Delete John Doe's Footprints"] = "删除无名氏的脚印",
+    ["Unlock"] = "解锁",
+    ["Character Functions"] = "角色功能",
+    ["Speed"] = "速度",
+    ["Stamina"] = "耐力",
+    ["Walkspeed Multiplier"] = "行走速度倍数",
+    ["Multiplier"] = "倍数",
+    ["Walkspeed Type"] = "行走速度类型",
+    ["Blatant"] = "明显",
+    ["Disable Slowness Modifiers"] = "禁用减速修改器",
+    ["Note: Stamina changes apply after round ends"] = "注意：耐力更改在回合结束后生效",
+    ["Infinite Stamina"] = "无限耐力",
+    ["Stamina Gain Speed"] = "耐力获取速度",
+    ["Max Stamina"] = "最大耐力",
+    ["Actions"] = "动作",
+    ["Abilities"] = "能力",
+    ["Regdoll"] = "布娃娃状态",
+    ["Frontflip"] = "前空翻",
+    ["Invisibility"] = "隐身",
+    ["Better Noli Controls"] = "更好的Noli控制"
 }
 
 local function translateText(text)
