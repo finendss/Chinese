@@ -44,31 +44,16 @@ local Button = Tab:Button({
 })
 
 local Tab = Window:Tab({
-    Title = "墨水游戏",
+    Title = "森林99夜(Forest 99 Nights)",
     Icon = "door-open",
     Locked = false,
 })
 
 local Button = Tab:Button({
-    Title = "RINGTA汉化",
-    Desc = "汉化有点没汉",
+    Title = "虚空99夜",
+    Desc = "有一点没汉化，不影响",
     Locked = false,
     Callback = function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XHnb/refs/heads/main/%E6%9E%97%E8%8D%85%E6%B1%89%E5%8C%96"))()
-    end
-})
-
-local Tab = Window:Tab({
-    Title = "自动翻译",
-    Icon = "door-open",
-    Locked = false,
-})
-
-local Button = Tab:Button({
-    Title = "自动汉化",
-    Desc = "独家功能有别人帮助",
-    Locked = false,
-    Callback = function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XHnb/refs/heads/main/%E8%87%AA%E5%8A%A8%E7%BF%BB%E8%AF%91"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/Chinese/refs/heads/main/Void%2099%20Nights"))()
     end
 })
