@@ -1,4 +1,5 @@
 local Translations = {
+    ["Profile"] = "FIN Team汉化",
     ["Contributors"] = "贡献者",
     ["Helped with Optimization"] = "帮助优化",
     ["Helper with Generators"] = "生成器助手",
@@ -51,7 +52,7 @@ local Translations = {
     ["Self Effects"] = "自身效果",
     ["Princess Mode"] = "公主模式",
     ["Field of View"] = "视野",
-["Fartsaken"] = "Fartsaken(FIN Team汉化)",
+    ["Fartsaken"] = "Fartsaken",
     ["Home"] = "主页",
     ["Visuals"] = "视觉",
     ["玩家"] = "玩家",
