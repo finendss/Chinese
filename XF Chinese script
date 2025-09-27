@@ -1,0 +1,74 @@
+local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/CNHM/asg/refs/heads/main/wind%20ui.lua"))()
+
+local Window = WindUI:CreateWindow({
+    Title = "雪黄汉化中心 ",
+    IconThemed = true,
+    Icon = "star",
+    Author = "作者:黄某&张乐",
+    Size = UDim2.fromOffset(400, 300),
+    Transparent = true,
+    Theme = "Dark",
+})
+
+Window:EditOpenButton({
+    Title = "打开脚本",
+    Icon = "monitor",
+    CornerRadius = UDim.new(0, 6),
+    StrokeThickness = 2,
+    Color = ColorSequence.new(Color3.fromRGB(30, 30, 30), Color3.fromRGB(255, 255, 255)),
+    Draggable = true,
+})
+
+local Tab = Window:Tab({
+    Title = "在森林中存活99个夜晚",
+    Icon = "tree-pine",
+    Locked = false,
+})
+
+local Button = Tab:Button({
+    Title = "虚空99夜汉化",
+    Desc = "无卡密超级多功能",
+    Locked = false,
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XHnb/refs/heads/main/%E8%99%9A%E7%A9%BA%E6%B1%89%E5%8C%96"))()
+    end
+})
+
+local Button = Tab:Button({
+    Title = "H4x-99夜汉化",
+    Desc = "有卡密但功能也多",
+    Locked = false,
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XHnb/refs/heads/main/H4x%E6%B1%89%E5%8C%96"))()
+    end
+})
+
+local Tab = Window:Tab({
+    Title = "墨水游戏",
+    Icon = "door-open",
+    Locked = false,
+})
+
+local Button = Tab:Button({
+    Title = "RINGTA汉化",
+    Desc = "汉化有点没汉",
+    Locked = false,
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XHnb/refs/heads/main/%E6%9E%97%E8%8D%85%E6%B1%89%E5%8C%96"))()
+    end
+})
+
+local Tab = Window:Tab({
+    Title = "自动翻译",
+    Icon = "door-open",
+    Locked = false,
+})
+
+local Button = Tab:Button({
+    Title = "自动汉化",
+    Desc = "独家功能有别人帮助",
+    Locked = false,
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XHnb/refs/heads/main/%E8%87%AA%E5%8A%A8%E7%BF%BB%E8%AF%91"))()
+    end
+})
