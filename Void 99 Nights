@@ -1,0 +1,332 @@
+local Translations = {
+    ["Voidware"] = "虚空99夜",
+    ["discord.gg/voidware"] = "FIN Team汉化",
+    ["Search"] = "搜索",
+    ["Information"] = "信息",
+    ["Fun"] = "娱乐功能",
+    ["Automation"] = "自动化",
+    ["Bring Stuff"] = "物品召唤",
+    ["Main"] = "主菜单",
+    ["Fishing"] = "钓鱼",
+    ["Teleport"] = "传送",
+    ["Visuals"] = "视觉功能",
+    ["Keybind"] = "按键绑定",
+    ["Keybind to open ui"] = "按键打开界面",
+    ["Join Discord Server"] = "加入Discord服务器",
+    ["Make sure to join our discord server for updates!"] = "请务必加入我们的Discord服务器以获取更新！",
+    ["Unload"] = "关闭脚本",
+    ["Library Choice"] = "UI选择",
+    ["Movement"] = "移动",
+    ["Walk Speed"] = "行走速度",
+    ["Speed"] = "速度",
+    ["Fly"] = "飞行",
+    ["Fly Speed"] = "飞行速度",
+    ["TP Walk Speed"] = "传送行走速度",
+    ["TP Walk"] = "传送行走",
+    ["Local Player"] = "本地玩家",
+    ["Misc"] = "杂项",
+    ["Theme"] = "主题",
+    ["Config"] = "配置",
+    ["Bring Settings"] = "物品召唤设置",
+    ["Use Freecam for Bring Items"] = "使用自由视角召唤物品",
+    ["Faster Bring [BETA]"] = "更快召唤 [BETA]",
+    ["Bring Location"] = "召唤位置",
+    ["Player"] = "玩家",
+    ["Max Per Item"] = "单个物品最大数量",
+    ["Bring Cooldown"] = "召唤冷却",
+    ["No Bring Amount Limit"] = "无召唤数量限制",
+    ["Bring Gears"] = "召唤齿轮",
+    ["Gears"] = "齿轮",
+    ["Bring Guns & Armor"] = "召唤枪械与护甲",
+    ["Guns & Armor"] = "枪械与护甲",
+    ["Bring Others"] = "召唤其他",
+    ["Others"] = "其他",
+    ["Pickup All Flowers"] = "拾取所有花朵",
+    ["Collect All Gold Stacks"] = "收集所有金币堆",
+    ["Auto Campfire"] = "自动篝火",
+    ["Fuel Type"] = "燃料类型",
+    ["Auto Fill Campfire"] = "自动填充篝火",
+    ["Start Fueling when (Fire HP)"] = "当(篝火生命值)为...时开始填充",
+    ["Auto Collect"] = "自动收集",
+    ["Plant Stuff"] = "种植物品",
+    ["Build Radius"] = "建造半径",
+    ["Angle Increment"] = "角度增量",
+    ["Plant/Build Limit"] = "种植/建造限制",
+    ["Plant Saplings in Circle"] = "环形种植树苗",
+    ["Build Log Walls in Circle"] = "环形建造原木墙",
+    ["Bring Fuel [BETA]"] = "召唤燃料 [BETA]",
+    ["Fuel"] = "燃料",
+    ["Bring Logs [BETA]"] = "召唤原木 [BETA]",
+    ["Bring Food & Healing"] = "召唤食物与治疗",
+    ["Food & Healing"] = "食物与治疗",
+    ["Auto Pickup Flowers"] = "自动拾取花朵",
+    ["Auto Collect Coin Stacks"] = "自动收集金币堆",
+    ["Auto Open Seed Boxes"] = "自动打开种子盒",
+    ["Auto Chest [BETA]"] = "自动箱子 [BETA]",
+    ["Heal When Below"] = "当生命值低于",
+    ["Hitbox Expansion"] = "碰撞箱扩大",
+    ["Enable Hitbox Expansion"] = "启用碰撞箱扩大",
+    ["Hitbox Size Multiplier"] = "碰撞箱大小倍数",
+    ["Other"] = "其他",
+    ["Instant Open Chests"] = "立即打开箱子",
+    ["Auto TP to Camp at Night"] = "夜晚自动传送至营地",
+    ["TP to Camp"] = "传送至营地",
+    ["Entity Godmode"] = "实体无敌模式",
+    ["Enabled"] = "已启用",
+    ["Hip Height Changer"] = "臀部高度改变器",
+    ["Kill Aura"] = "击杀光环",
+    ["Kill Aura Range"] = "击杀光环范围",
+    ["Ice Aura"] = "冰霜光环",
+    ["All Children [BETA]"] = "所有子实体 [BETA]",
+    ["Teleport Entities"] = "传送实体",
+    ["Teleport The Entities"] = "传送实体",
+    ["Freeze the movement of something :3"] = "冻结某个物品的移动",
+    ["Freeze The Thingys"] = "冻结物品",
+    ["UnFreeze The Thingys"] = "解冻物品",
+    ["Reveal Map"] = "揭示地图",
+    ["Teleport All Trees"] = "传送所有树木",
+    ["Teleport All BIG Trees"] = "传送所有大树",
+    ["Teleport All Chests"] = "传送所有箱子",
+    ["Auto Eat"] = "自动进食",
+    ["Auto Eat Food"] = "自动食用食物",
+    ["Eat When Hunger Below"] = "当饥饿度低于",
+    ["Auto Bandage"] = "自动绷带",
+    ["MedKit included"] = "包含医疗包",
+    ["Ice Aura Range"] = "冰霜光环范围",
+    ["Tree Farm"] = "树木农场",
+    ["Auto Chop Tree Type"] = "自动砍伐树木类型",
+    ["Auto Chop Trees"] = "自动砍伐树木",
+    ["Auto Chop Trees Range"] = "自动砍伐树木范围",
+    ["Auto Plant Saplings"] = "自动种植树苗",
+    ["Chop Status Visualiser"] = "砍伐状态可视化",
+    ["Toggle Window Transparency"] = "切换窗口透明度",
+    ["Background Color"] = "背景颜色",
+    ["Outline Color"] = "轮廓颜色",
+    ["Text Color"] = "文本颜色",
+    ["Placeholder Text Color"] = "占位符文本颜色",
+    ["Update"] = "更新",
+    ["Lavender"] = "薰衣草色",
+    ["Rose"] = "玫瑰色",
+    ["Peach"] = "桃色",
+    ["Citrus"] = "柑橘色",
+    ["Sunset"] = "日落色",
+    ["Coral"] = "珊瑚色",
+    ["Aurora"] = "极光色",
+    ["Ocean"] = "海洋色",
+    ["Aqua"] = "水色",
+    ["Midnight"] = "午夜色",
+    ["Dark"] = "黑暗色",
+    ["Forest"] = "森林色",
+    ["Indigo"] = "靛蓝色",
+    ["Sky"] = "天空色",
+    ["Amber"] = "琥珀色",
+    ["Emerald"] = "翡翠色",
+    ["Violet"] = "紫罗兰色",
+    ["Red"] = "红色",
+    ["Reset Camera"] = "重置视角",
+    ["Anti Void"] = "防虚空",
+    ["Coordinates"] = "坐标",
+    ["Show Coordinates"] = "显示坐标",
+    ["Credits"] = "鸣谢",
+    ["erchodev#0 - script dev"] = "erchodev#0 - 脚本开发者",
+    ["Linoria - ui library"] = "Linoria - UI库",
+    ["Obsidian - ui library"] = "Obsidian - UI库",
+    ["Wind - ui library"] = "Wind - UI库",
+    ["mspaint v2"] = "mspaint v2",
+    ["Inf Yield"] = "IY脚本",
+    ["Please notify me if you need credits (erchodev#0 on discord)"] = "如果你需要鸣谢，请在discord上通知我 (erchodev#0)",
+    ["Characters Items"] = "角色物品",
+    ["ESP Settings"] = "透视设置",
+    ["Enable Highlight"] = "启用高亮",
+    ["Show Distance"] = "显示距离",
+    ["Fill Transparency"] = "填充透明度",
+    ["Outline Transparency"] = "轮廓透明度",
+    ["Text Size"] = "文本大小",
+    ["Characters"] = "角色",
+    ["CharactersEspColor"] = "角色透视颜色",
+    ["Save"] = "保存",
+    ["Saves elements to config"] = "保存配置元素",
+    ["Load"] = "加载",
+    ["Loads elements from config"] = "从配置加载元素",
+    ["Disabled"] = "已禁用",
+    ["FoodHealingEspColor"] = "食物与治疗透视颜色",
+    ["GunsArmorEspColor"] = "枪械与护甲透视颜色",
+    ["Other ESP"] = "其他透视",
+    ["FishingEspColor"] = "钓鱼透视颜色",
+    ["Children ESP"] = "子实体透视",
+    ["Children"] = "子实体",
+    ["ChildrenEspColor"] = "子实体透视颜色",
+    ["Noclip"] = "穿墙",
+    ["Infinite Jump"] = "无限跳跃",
+    ["Useful Stuff"] = "实用功能",
+    ["Fullbright"] = "高亮",
+    ["Remove Fog"] = "移除雾",
+    ["Ambient"] = "环境光",
+    ["Rich Shader"] = "高级着色器",
+    ["Lighting"] = "光照",
+    ["Enable Lighting"] = "启用光照",
+    ["Aesthetic Lighting"] = "美学光照",
+    ["Security"] = "安全",
+    ["Anti AFK"] = "防挂机",
+    ["Performance"] = "性能",
+    ["Low GFX"] = "低画质",
+    ["Name"] = "名称",
+    ["Espcolor"] = "Esp颜色",
+    ["Child"] = "孩子",
+    ["Child TP"] = "孩子传送",
+    ["Auto TP to Warm Place"] = "自动传送至暖地",
+    ["Chest TP [BETA]"] = "箱子传送 [BETA]",
+    ["Chest Dropdown"] = "箱子下拉菜单",
+    ["Refresh Chest List"] = "刷新箱子列表",
+    ["Structure TP"] = "结构体传送",
+    ["Teleport Structure"] = "选择结构体",
+    ["Teleport to Selected Structure"] = "传送至所选结构体",
+    ["Other TP"] = "其他传送",
+    ["Teleport to Stronghold"] = "传送至据点",
+    ["Teleport to Stronghold Diamond Chest"] = "传送至据点钻石箱",
+    ["Teleport to Caravan"] = "传送至大篷车",
+    ["Teleport to Fairy"] = "传送至仙子",
+    ["Teleport to Anvil"] = "传送至铁砧",
+    ["100% Fishing Success Rate"] = "100% 钓鱼成功率",
+    ["Instant Catch Fish"] = "立即钓鱼",
+    ["Other Items"] = "其他物品",
+    ["FrogBlue"] = "蓝色青蛙",
+    ["FrogPurple"] = "紫色青蛙",
+    ["Wolf"] = "狼",
+    ["Bear"] = "熊",
+    ["Bunny"] = "兔子",
+    ["Arctic Fox"] = "北极狐",
+    ["Mammoth"] = "猛犸象",
+    ["Juggernaut Cultist"] = "主宰信徒",
+    ["Polar Bear"] = "北极熊",
+    ["Alpha Wolf"] = "狼王",
+    ["Old Rod"] = "旧钓竿",
+    ["Lost Child"] = "迷路的孩子",
+    ["Hut"] = "小屋",
+    ["AlienMothership"] = "外星母舰",
+    ["AlienCrash_Active"] = "活跃的外星坠毁地",
+    ["Military Base"] = "军事基地",
+    ["Snow Clothing Shop"] = "雪地服装店",
+    ["Testing Facility"] = "测试设施",
+    ["Fairy House"] = "仙子屋",
+    ["Close Window"] = "提示",
+    ["Do you want to close this window? You will not be able to open it again."] = "你确定要关闭此脚本吗？你将无法再次打开此脚本",
+    ["Cancel"] = "取消",
+    ["Self"] = "视角",
+    ["FOV"] = "视场角",
+}
+
+local function translateText(text)
+    if not text or type(text) ~= "string" then return text end
+    
+    if Translations[text] then
+        return Translations[text]
+    end
+    
+    for en, cn in pairs(Translations) do
+        if text:find(en) then
+            return text:gsub(en, cn)
+        end
+    end
+    
+    return text
+end
+
+local function setupTranslationEngine()
+    local success, err = pcall(function()
+        local oldIndex = getrawmetatable(game).__newindex
+        setreadonly(getrawmetatable(game), false)
+        
+        getrawmetatable(game).__newindex = newcclosure(function(t, k, v)
+            if (t:IsA("TextLabel") or t:IsA("TextButton") or t:IsA("TextBox")) and k == "Text" then
+                v = translateText(tostring(v))
+            end
+            return oldIndex(t, k, v)
+        end)
+        
+        setreadonly(getrawmetatable(game), true)
+    end)
+    
+    if not success then
+        warn("元表劫持失败:", err)
+       
+        local translated = {}
+        local function scanAndTranslate()
+            for _, gui in ipairs(game:GetService("CoreGui"):GetDescendants()) do
+                if (gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("TextBox")) and not translated[gui] then
+                    pcall(function()
+                        local text = gui.Text
+                        if text and text ~= "" then
+                            local translatedText = translateText(text)
+                            if translatedText ~= text then
+                                gui.Text = translatedText
+                                translated[gui] = true
+                            end
+                        end
+                    end)
+                end
+            end
+            
+            local player = game:GetService("Players").LocalPlayer
+            if player and player:FindFirstChild("PlayerGui") then
+                for _, gui in ipairs(player.PlayerGui:GetDescendants()) do
+                    if (gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("TextBox")) and not translated[gui] then
+                        pcall(function()
+                            local text = gui.Text
+                            if text and text ~= "" then
+                                local translatedText = translateText(text)
+                                if translatedText ~= text then
+                                    gui.Text = translatedText
+                                    translated[gui] = true
+                                end
+                            end
+                        end)
+                    end
+                end
+            end
+        end
+        
+        local function setupDescendantListener(parent)
+            parent.DescendantAdded:Connect(function(descendant)
+                if descendant:IsA("TextLabel") or descendant:IsA("TextButton") or descendant:IsA("TextBox") then
+                    task.wait(0.1)
+                    pcall(function()
+                        local text = descendant.Text
+                        if text and text ~= "" then
+                            local translatedText = translateText(text)
+                            if translatedText ~= text then
+                                descendant.Text = translatedText
+                            end
+                        end
+                    end)
+                end
+            end)
+        end
+        
+        pcall(setupDescendantListener, game:GetService("CoreGui"))
+        local player = game:GetService("Players").LocalPlayer
+        if player and player:FindFirstChild("PlayerGui") then
+            pcall(setupDescendantListener, player.PlayerGui)
+        end
+        
+        while true do
+            scanAndTranslate()
+            task.wait(3)
+        end
+    end
+end
+
+task.wait(2)
+
+setupTranslationEngine()
+
+local success, err = pcall(function()
+--这下面填加载外部脚本
+loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VW-Add/main/nightsintheforest.lua", true))()
+
+
+end)
+
+if not success then
+    warn("加载失败:", err)
+end
