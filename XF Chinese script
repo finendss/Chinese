@@ -30,7 +30,7 @@ local Button = Tab:Button({
     Desc = "全汉化 无卡密",
     Locked = false,
     Callback = function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XHnb/refs/heads/main/%E8%99%9A%E7%A9%BA%E6%B1%89%E5%8C%96"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/Chinese/refs/heads/main/Azure%20Chinese"))()
     end
 })
 
