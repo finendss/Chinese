@@ -137,7 +137,32 @@ local Translations = {
     ["Reach Distance"] = "触及距离",
     ["Reach Prediction"] = "触及预测",
     ["Reach Strength"] = "触及强度",
-    ["Reach Delay"] = "触及延迟"
+    ["Reach Delay"] = "触及延迟",
+["Aimbot and aiming assistance features"] = "自瞄和瞄准辅助功能",
+    ["Aimbot"] = "自瞄",
+    ["TwoTime Look Same Direction"] = "TwoTime看向同一方向",
+    ["Aimbot Characters"] = "自瞄角色",
+    ["Silent Aim"] = "静默瞄准",
+    ["Silent Aim Characters"] = "静默瞄准角色",
+    ["Dusekkar"] = "Dusekkar",
+    ["Noli"] = "Noli",
+    ["Aimbot Settings"] = "自瞄设置",
+    ["Aimbot Prediction"] = "自瞄预测",
+    ["Aimbot Rotation"] = "自瞄旋转",
+    ["Aimbot Max Distance"] = "自瞄最大距离",
+    ["Studs"] = "罗布乐思单位",
+    ["This will change how aimbot selects targets, inside the circle or the closest to you."] = "这将改变自瞄选择目标的方式，圆圈内或离你最近的目标",
+    ["Aimbot Priority"] = "自瞄优先级",
+    ["Nearest"] = "最近",
+    ["Silent Aim Prediction Strength"] = "静默瞄准预测强度",
+    ["Dusekkar Aim Target"] = "Dusekkar瞄准目标",
+    ["Killer"] = "杀手",
+    ["Dusekkar Wallbang"] = "Dusekkar穿墙",
+    ["Aimbot Type"] = "自瞄类型",
+    ["Character Aimbot"] = "角色自瞄",
+    ["FOV Circle Radius"] = "FOV圆圈半径",
+    ["FOV Circle Transparency"] = "FOV圆圈透明度",
+    ["Fov Circle Color"] = "FOV圆圈颜色"
 }
 
 local function translateText(text)
