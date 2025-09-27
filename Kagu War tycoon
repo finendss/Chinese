@@ -1,4 +1,5 @@
 local Translations = {
+    ["Kagu Hub"] = "Kagu(FIN Team汉化)",
     ["Money"] = "金钱",
     ["Auto Crate"] = "自动开箱",
     ["Auto Buy"] = "自动购买",
