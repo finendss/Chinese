@@ -1,6 +1,5 @@
 local Translations = {
-   --["这里填要替换的英文"] = "这里填中文",
-   ["Scripts"] = "脚本",
+    ["Scripts"] = "脚本",
     ["Main"] = "主要",
     ["This tab is empty"] = "此选项卡为空",
     ["Fishing"] = "钓鱼",
