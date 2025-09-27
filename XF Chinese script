@@ -1,17 +1,17 @@
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/CNHM/asg/refs/heads/main/wind%20ui.lua"))()
 
 local Window = WindUI:CreateWindow({
-    Title = "雪黄汉化中心 ",
+    Title = "XF汉化执行器 ",
     IconThemed = true,
     Icon = "star",
-    Author = "作者:黄某&张乐",
+    Author = "FIN Team",
     Size = UDim2.fromOffset(400, 300),
     Transparent = true,
     Theme = "Dark",
 })
 
 Window:EditOpenButton({
-    Title = "打开脚本",
+    Title = "打开执行器",
     Icon = "monitor",
     CornerRadius = UDim.new(0, 6),
     StrokeThickness = 2,
