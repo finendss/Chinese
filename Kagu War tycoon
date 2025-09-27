@@ -55,9 +55,6 @@ local Translations = {
     ["Get RPG"] = "获取RPG"
 }
 
-return translations
-}
-
 local function translateText(text)
     if not text or type(text) ~= "string" then return text end
     
