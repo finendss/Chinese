@@ -56,8 +56,8 @@ local Translations = {
     ["Anti Ragdoll"] = "防布娃娃（游戏中角色失去控制的状态）",
     ["Anti ragdoll"] = "防布娃娃状态",
     ["Anti Stun"] = "防眩晕",
-    ["Anti stun"] = "防眩晕"
-    ["Teleport To End"] = "传送至终点"
+    ["Anti stun"] = "防眩晕",
+    ["Teleport To End"] = "传送至终点",
     ["Teleport to the end"] = "传送到终点"
 }
 
