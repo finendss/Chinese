@@ -20,14 +20,14 @@ Window:EditOpenButton({
 })
 
 local Tab = Window:Tab({
-    Title = "在森林中存活99个夜晚",
+    Title = "墨水游戏(ink game)",
     Icon = "tree-pine",
     Locked = false,
 })
 
 local Button = Tab:Button({
-    Title = "虚空99夜汉化",
-    Desc = "无卡密超级多功能",
+    Title = "Azure Hub",
+    Desc = "全汉化 无卡密",
     Locked = false,
     Callback = function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XHnb/refs/heads/main/%E8%99%9A%E7%A9%BA%E6%B1%89%E5%8C%96"))()
