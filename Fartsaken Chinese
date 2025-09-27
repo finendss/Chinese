@@ -117,7 +117,27 @@ local Translations = {
     ["Spoof Device"] = "伪装设备",
     ["PC"] = "电脑",
     ["Mobile"] = "移动设备",
-    ["Console"] = "游戏主机"
+    ["Console"] = "游戏主机",
+    ["Lock"] = "锁定",
+    ["Rage functions for competitive play"] = "用于竞技游戏的狂暴功能",
+    ["Settings"] = "设置",
+    ["Misc Rage Functions"] = "杂项狂暴功能",
+    ["Auto Screen Popups"] = "自动屏幕弹窗",
+    ["Anti Reach"] = "反触及",
+    ["Shedletsky Fling Sword"] = "Shedletsky投掷剑",
+    ["Reach"] = "触及",
+    ["Reach Characters"] = "触及角色",
+    ["Slasher"] = "杀手",
+    ["No1"] = "第一",
+    ["JohnDoe"] = "无名氏",
+    ["Shedletsky"] = "Shedletsky",
+    ["TwoTime"] = "两次",
+    ["Guest1337"] = "访客1337",
+    ["Reach Settings"] = "触及设置",
+    ["Reach Distance"] = "触及距离",
+    ["Reach Prediction"] = "触及预测",
+    ["Reach Strength"] = "触及强度",
+    ["Reach Delay"] = "触及延迟"
 }
 
 local function translateText(text)
