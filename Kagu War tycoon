@@ -1,0 +1,175 @@
+local Translations = {
+local translations = {
+    ["Money"] = "金钱",
+    ["Auto Crate"] = "自动开箱",
+    ["Auto Buy"] = "自动购买",
+    ["Character"] = "角色",
+    ["Speed Hack"] = "速度黑客",
+    ["CFrame Multiplier"] = "CFrame 倍数",
+    ["Fly"] = "飞行",
+    ["Fly Speed"] = "飞行速度",
+    ["Combat"] = "战斗",
+    ["Silent Aim"] = "静默瞄准",
+    ["TeamCheck"] = "团队检查",
+    ["Target Part"] = "目标部位",
+    ["Head"] = "头部",
+    ["Fov Enabled"] = "FOV 启用",
+    ["Fov Changer"] = "FOV 切换器",
+    ["CRAM"] = "CRAM",
+    ["Kill Aura"] = "杀戮光环",
+    ["Ignore Own Vehicle"] = "忽略自身载具",
+    ["Target Helicopter"] = "目标直升机",
+    ["Target Vehicles"] = "目标车辆",
+    ["Target Planes"] = "目标飞机",
+    ["Target GunShip"] = "目标武装直升机",
+    ["Target Tank"] = "目标坦克",
+    ["Target Boats"] = "目标船只",
+    ["Target Drones"] = "目标无人机",
+    ["ESP"] = "ESP",
+    ["If the ESPs are broken or working poorly, then turn them off and restart the script without changing the window."] = "如果ESP损坏或工作不佳，请关闭它们并重新启动脚本，不要更改窗口。",
+    ["Enable ESP"] = "启用ESP",
+    ["Box"] = "方框",
+    ["Tracers"] = "追踪线",
+    ["Name"] = "名称",
+    ["Health Bar"] = "生命条",
+    ["Refresh ESP"] = "刷新ESP",
+    ["Kagu Hub"] = "Kagu 中心",
+    ["Main"] = "主菜单",
+    ["Info"] = "信息",
+    ["UI Settings"] = "UI 设置",
+    ["Community"] = "社区",
+    ["You can find the community of our Kagu Hub script in diskord and telegram. I can help you there if you encounter any errors."] = "您可以在 Discord 和 Telegram 上找到我们 Kagu Hub 脚本的社区。如果遇到任何错误，我可以在那里帮助您。",
+    ["Telegram Channel"] = "Telegram 频道",
+    ["Discord Server"] = "Discord 服务器",
+    ["NoClip"] = "无碰撞",
+    ["No Fall Damage"] = "无坠落伤害",
+    ["Full Bright"] = "全亮",
+    ["FPS Boost"] = "FPS 提升",
+    ["RPG"] = "RPG",
+    ["ONLY WITH RPG"] = "仅限RPG",
+    ["If the RPG doesn't fire, then rejoin (it may also not reach)"] = "如果RPG没有开火，那么重新加入（它也可能无法到达）",
+    ["Nuke Aura"] = "核弹光环",
+    ["Aura Range"] = "光环范围",
+    ["Nuke Shield"] = "核弹护盾",
+    ["Rocket MultiShot"] = "火箭多重射击",
+    ["Socket Count"] = "插槽数量",
+    ["Get RPG"] = "获取RPG"
+}
+
+return translations
+}
+
+local function translateText(text)
+    if not text or type(text) ~= "string" then return text end
+    
+    if Translations[text] then
+        return Translations[text]
+    end
+    
+    for en, cn in pairs(Translations) do
+        if text:find(en) then
+            return text:gsub(en, cn)
+        end
+    end
+    
+    return text
+end
+
+local function setupTranslationEngine()
+    local success, err = pcall(function()
+        local oldIndex = getrawmetatable(game).__newindex
+        setreadonly(getrawmetatable(game), false)
+        
+        getrawmetatable(game).__newindex = newcclosure(function(t, k, v)
+            if (t:IsA("TextLabel") or t:IsA("TextButton") or t:IsA("TextBox")) and k == "Text" then
+                v = translateText(tostring(v))
+            end
+            return oldIndex(t, k, v)
+        end)
+        
+        setreadonly(getrawmetatable(game), true)
+    end)
+    
+    if not success then
+        warn("元表劫持失败:", err)
+       
+        local translated = {}
+        local function scanAndTranslate()
+            for _, gui in ipairs(game:GetService("CoreGui"):GetDescendants()) do
+                if (gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("TextBox")) and not translated[gui] then
+                    pcall(function()
+                        local text = gui.Text
+                        if text and text ~= "" then
+                            local translatedText = translateText(text)
+                            if translatedText ~= text then
+                                gui.Text = translatedText
+                                translated[gui] = true
+                            end
+                        end
+                    end)
+                end
+            end
+            
+            local player = game:GetService("Players").LocalPlayer
+            if player and player:FindFirstChild("PlayerGui") then
+                for _, gui in ipairs(player.PlayerGui:GetDescendants()) do
+                    if (gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("TextBox")) and not translated[gui] then
+                        pcall(function()
+                            local text = gui.Text
+                            if text and text ~= "" then
+                                local translatedText = translateText(text)
+                                if translatedText ~= text then
+                                    gui.Text = translatedText
+                                    translated[gui] = true
+                                end
+                            end
+                        end)
+                    end
+                end
+            end
+        end
+        
+        local function setupDescendantListener(parent)
+            parent.DescendantAdded:Connect(function(descendant)
+                if descendant:IsA("TextLabel") or descendant:IsA("TextButton") or descendant:IsA("TextBox") then
+                    task.wait(0.1)
+                    pcall(function()
+                        local text = descendant.Text
+                        if text and text ~= "" then
+                            local translatedText = translateText(text)
+                            if translatedText ~= text then
+                                descendant.Text = translatedText
+                            end
+                        end
+                    end)
+                end
+            end)
+        end
+        
+        pcall(setupDescendantListener, game:GetService("CoreGui"))
+        local player = game:GetService("Players").LocalPlayer
+        if player and player:FindFirstChild("PlayerGui") then
+            pcall(setupDescendantListener, player.PlayerGui)
+        end
+        
+        while true do
+            scanAndTranslate()
+            task.wait(3)
+        end
+    end
+end
+
+task.wait(2)
+
+setupTranslationEngine()
+
+local success, err = pcall(function()
+--这下面填加载外部脚本
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Kaguya11/KaguHubRework/refs/heads/main/Scripts/Loader.lua", true))("t.me/rbxscript_robot")
+
+
+end)
+
+if not success then
+    warn("加载失败:", err)
+end
