@@ -314,9 +314,8 @@ setupTranslationEngine()
 
 local success, err = pcall(function()
 --这下面填加载外部脚本
+
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Snowt69/SNT-HUB/refs/heads/main/Forsaken"))()
-
-
 end)
 
 if not success then
