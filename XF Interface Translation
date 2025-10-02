@@ -1,0 +1,272 @@
+local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/CNHM/asg/refs/heads/main/wind%20ui.lua"))()
+
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local CoreGui = game:GetService("CoreGui")
+
+local TARGET_LANGUAGE = "zh-CN"
+local SCAN_INTERVAL = 2
+local MAX_TEXT_LENGTH = 100
+
+local translatedCache = {}
+local translatedObjects = {}
+local isTranslationEnabled = false
+local connection = nil
+
+local function isEnglishText(text)
+    if not text or type(text) ~= "string" then return false end
+    if not text:match("[A-Za-z]") then
+        return false
+    end
+    if text:match("[\228-\233][\128-\191][\128-\191]") or 
+       text:match("[\234-\235][\128-\191][\128-\191]") or 
+       text:match("[\227][\128-\191][\128-\191]") then
+        return false
+    end
+    return true
+end
+
+local function shouldSkipTranslation(text)
+    if not text or text == "" or translatedCache[text] then
+        return true
+    end
+    if text:match("^%s*$") or 
+       text:match("^[0-9%.%s,:/%%%-%=%+%*%(%)%[%]%{%}]+$") then
+        translatedCache[text] = text
+        return true
+    end
+    if #text > MAX_TEXT_LENGTH then
+        translatedCache[text] = text
+        return true
+    end
+    if not isEnglishText(text) then
+        translatedCache[text] = text
+        return true
+    end
+    return false
+end
+
+local function translate(text)
+    if shouldSkipTranslation(text) then
+        return translatedCache[text] or text
+    end
+
+    local success, response = pcall(function()
+        local url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" .. 
+                    TARGET_LANGUAGE .. "&dt=t&q=" .. HttpService:UrlEncode(text)
+        return game:HttpGet(url)
+    end)
+
+    if success and response then
+        local ok, data = pcall(HttpService.JSONDecode, HttpService, response)
+        if ok and data and data[1] then
+            local translatedText = ""
+            for _, segment in ipairs(data[1]) do
+                if segment[1] then
+                    translatedText = translatedText .. segment[1]
+                end
+            end
+            if translatedText ~= "" and translatedText ~= text then
+                translatedCache[text] = translatedText
+                print("翻译成功: \"" .. text .. "\" -> \"" .. translatedText .. "\"")
+                return translatedText
+            end
+        end
+    end
+
+    translatedCache[text] = text
+    return text
+end
+
+local function getTextContent(gui)
+    if gui:IsA("TextLabel") or gui:IsA("TextButton") then
+        return gui.Text
+    elseif gui:IsA("TextBox") then
+        return gui.Text or gui.PlaceholderText
+    end
+    return nil
+end
+
+local function setTextContent(gui, text)
+    if gui:IsA("TextLabel") or gui:IsA("TextButton") then
+        if gui.Text ~= text then
+            gui.Text = text
+        end
+    elseif gui:IsA("TextBox") then
+        if gui.Text ~= text then
+            gui.Text = text
+        end
+    end
+end
+
+local function shouldTranslateGui(gui)
+    if not gui:IsA("TextLabel") and not gui:IsA("TextButton") and not gui:IsA("TextBox") then
+        return false
+    end
+    if not gui.Visible then
+        return false
+    end
+    if translatedObjects[gui] then
+        return false
+    end
+    local text = getTextContent(gui)
+    if not text or text == "" then
+        return false
+    end
+    return true
+end
+
+local function scanAndTranslate()
+    local count = 0
+    
+    for _, gui in ipairs(playerGui:GetDescendants()) do
+        if shouldTranslateGui(gui) then
+            local text = getTextContent(gui)
+            if text and text ~= "" then
+                local translatedText = translate(text)
+                if translatedText ~= text then
+                    setTextContent(gui, translatedText)
+                    translatedObjects[gui] = true
+                    count = count + 1
+                else
+                    translatedObjects[gui] = true
+                end
+            end
+        end
+    end
+    
+    for _, gui in ipairs(CoreGui:GetDescendants()) do
+        if shouldTranslateGui(gui) then
+            local text = getTextContent(gui)
+            if text and text ~= "" then
+                local translatedText = translate(text)
+                if translatedText ~= text then
+                    setTextContent(gui, translatedText)
+                    translatedObjects[gui] = true
+                    count = count + 1
+                else
+                    translatedObjects[gui] = true
+                end
+            end
+        end
+    end
+    
+    return count
+end
+
+local Window = WindUI:CreateWindow({
+    Title = "XF界面翻译工具(不是翻译脚本的) ",
+    IconThemed = true,
+    Icon = "star",
+    Author = "FIN Team",
+    Size = UDim2.fromOffset(450, 400),
+    Transparent = true,
+    Theme = "Dark",
+})
+
+Window:EditOpenButton({
+    Title = "打开翻译器",
+    Icon = "monitor",
+    CornerRadius = UDim.new(0, 6),
+    StrokeThickness = 2,
+    Color = ColorSequence.new(Color3.fromRGB(30, 30, 30), Color3.fromRGB(255, 255, 255)),
+    Draggable = true,
+})
+
+local AutoTranslateTab = Window:Tab({
+    Title = "自动翻译",
+    Icon = "languages",
+    Locked = false,
+})
+
+local translationStatus = "等待开始"
+local lastTranslationCount = 0
+local totalTranslated = 0
+
+AutoTranslateTab:Toggle({
+    Title = "启用自动翻译",
+    Desc = "开启后每2秒自动扫描并翻译英文界面",
+    Locked = false,
+    Callback = function(state)
+        isTranslationEnabled = state
+        if state then
+            translationStatus = "翻译运行中"
+            print("自动翻译已开启")
+            
+            if connection then
+                connection:Disconnect()
+                connection = nil
+            end
+            
+            lastTranslationCount = scanAndTranslate()
+            totalTranslated = totalTranslated + lastTranslationCount
+            if lastTranslationCount > 0 then
+                print("初始扫描翻译了 " .. lastTranslationCount .. " 个文本")
+            end
+            
+            connection = RunService.Heartbeat:Connect(function()
+                if isTranslationEnabled then
+                    local count = scanAndTranslate()
+                    if count > 0 then
+                        lastTranslationCount = count
+                        totalTranslated = totalTranslated + count
+                        print("扫描翻译了 " .. count .. " 个文本")
+                    end
+                    task.wait(SCAN_INTERVAL)
+                end
+            end)
+        else
+            translationStatus = "已停止"
+            if connection then
+                connection:Disconnect()
+                connection = nil
+            end
+            print("自动翻译已关闭")
+        end
+    end
+})
+
+AutoTranslateTab:Button({
+    Title = "立即扫描翻译",
+    Desc = "强制扫描当前所有界面文本",
+    Locked = false,
+    Callback = function()
+        local count = scanAndTranslate()
+        lastTranslationCount = count
+        totalTranslated = totalTranslated + count
+        print("立即扫描完成，翻译了 " .. count .. " 个文本")
+    end
+})
+
+AutoTranslateTab:Button({
+    Title = "清空翻译缓存",
+    Desc = "清除缓存以便重新翻译所有文本",
+    Locked = false,
+    Callback = function()
+        translatedCache = {}
+        translatedObjects = {}
+        lastTranslationCount = 0
+        print("翻译缓存已清空")
+    end
+})
+
+AutoTranslateTab:Label({
+    Title = "翻译状态",
+    Desc = "状态: " .. translationStatus
+})
+
+AutoTranslateTab:Label({
+    Title = "上次翻译数量",
+    Desc = "数量: " .. lastTranslationCount
+})
+
+AutoTranslateTab:Label({
+    Title = "总翻译数量",
+    Desc = "总计: " .. totalTranslated
+})
+
+print("XF汉化执行器加载完成")
+print("自动翻译功能已就绪，请在'自动汉化'标签页中启用")
