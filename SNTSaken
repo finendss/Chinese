@@ -1,5 +1,4 @@
 local Translations = {
-local Translations = {
     ["Noclip"] = "穿墙",
     ["Infinite Jump"] = "无限跳跃",
     ["Fly"] = "飞行",
