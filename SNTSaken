@@ -52,6 +52,18 @@ local Translations = {
     ["Highlight killer with red outline"] = "用红色轮廓高亮杀手",
     ["Items Highlight"] = "物品高亮",
     ["Highlight items with purple outline"] = "用紫色轮廓高亮物品",
+    ["Changelogs"] = "更新日志",
+    ["Fixed auto repair Generators"] = "修复了自动修理生成器",
+    ["Fixed Kill All"] = "修复了杀死所有功能",
+    ["Removed Autofarm Tab"] = "移除了自动农场标签页",
+    ["New design"] = "新设计",
+    ["New survivor tab functions: auto flip coin, auto fried chicken, auto block, auto clone, auto get items"] = "新的幸存者标签页功能：自动抛硬币、自动炸鸡、自动格挡、自动克隆、自动获取物品",
+    ["New killer tab functions: killer aura, auto skills"] = "新的杀手标签页功能：杀手光环、自动技能",
+    ["Fully fixed aimbot functions"] = "完全修复了自瞄功能",
+    ["Optimized ESP functions"] = "优化了ESP功能",
+    ["New anti stun, anti slow, infinite stamina functions"] = "新的防眩晕、防减速、无限耐力功能",
+    ["Configurations"] = "配置",
+    ["Rewrited all code"] = "重写了所有代码"
 }
 
 local function translateText(text)
