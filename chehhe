@@ -3,9 +3,9 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 -- 创建窗口
 local Window = Rayfield:CreateWindow({
-   Name = "XF外部脚本翻译器 - 转义修复版",
+   Name = "XF外部脚本翻译器 - 文本修复版",
    LoadingTitle = "加载中...",
-   LoadingSubtitle = "正在初始化转义修复版",
+   LoadingSubtitle = "正在初始化文本修复版",
    ConfigurationSaving = {
       Enabled = true,
       FolderName = "XFTranslator",
@@ -225,8 +225,8 @@ function loadAndTranslateExternalScript(url)
     StatusDisplay:Set("状态: 脚本加载成功，开始翻译...")
     ResultDisplay:Set("脚本加载成功，开始翻译...")
     
-    -- 使用新的翻译函数
-    local translatedScript, translatedCount = newTranslateScript(scriptContent)
+    -- 使用改进的翻译函数
+    local translatedScript, translatedCount = improvedTranslateScript(scriptContent)
     
     -- 使用增强版修复转义序列问题
     translatedScript = fixEscapeSequencesEnhanced(translatedScript)
@@ -264,8 +264,8 @@ function loadAndTranslateExternalScript(url)
     end
 end
 
--- 新的翻译函数 - 简化但更有效
-function newTranslateScript(scriptCode)
+-- 改进的翻译函数 - 更宽松的文本识别
+function improvedTranslateScript(scriptCode)
     local translatedScript = scriptCode
     local translatedCount = 0
     translationLog = {}
@@ -275,7 +275,7 @@ function newTranslateScript(scriptCode)
     
     -- 查找双引号字符串
     for text in scriptCode:gmatch('"([^"]*)"') do
-        if text and text ~= "" and shouldTranslate(text) then
+        if text and text ~= "" and improvedShouldTranslate(text) then
             if not table.find(allStrings, text) then
                 table.insert(allStrings, text)
             end
@@ -284,7 +284,7 @@ function newTranslateScript(scriptCode)
     
     -- 查找单引号字符串
     for text in scriptCode:gmatch("'([^']*)'") do
-        if text and text ~= "" and shouldTranslate(text) then
+        if text and text ~= "" and improvedShouldTranslate(text) then
             if not table.find(allStrings, text) then
                 table.insert(allStrings, text)
             end
@@ -319,9 +319,11 @@ function newTranslateScript(scriptCode)
     return translatedScript, translatedCount
 end
 
--- 简化的翻译判断
-function shouldTranslate(text)
+-- 改进的翻译判断 - 更宽松的条件
+function improvedShouldTranslate(text)
     if not text or text == "" then return false end
+    
+    -- 基本长度检查
     if #text < 2 then return false end
     if #text > 200 then return false end
     
@@ -340,8 +342,8 @@ function shouldTranslate(text)
     -- 跳过文件路径
     if text:match("[%w_]-%.%a+$") then return false end
     
-    -- 跳过看起来像变量名的文本
-    if text:match("^[%a_][%w_]*$") and #text < 25 then return false end
+    -- 跳过看起来像变量名的文本（放宽条件）
+    if text:match("^[%a_][%w_]*$") and #text < 15 then return false end
     
     -- 跳过数学表达式
     if text:match("[%+%-%*/%%=]") and text:match("%d") then return false end
@@ -355,7 +357,7 @@ function shouldTranslate(text)
         return false
     end
     
-    -- 常见UI词汇列表（扩展版）
+    -- 扩展的常见UI词汇列表
     local uiWords = {
         -- 基础词汇
         "the", "and", "for", "are", "but", "not", "you", "all", "can", "has", "was",
@@ -386,10 +388,20 @@ function shouldTranslate(text)
         
         -- 其他常见词汇
         "please", "wait", "loading", "processing", "complete", "finished", "done",
-        "ready", "active", "inactive", "visible", "hidden", "show", "hide", "display"
+        "ready", "active", "inactive", "visible", "hidden", "show", "hide", "display",
+        
+        -- 扩展词汇
+        "select", "choose", "pick", "change", "modify", "adjust", "set", "configure",
+        "manage", "control", "handle", "operate", "run", "execute", "perform", "do",
+        "make", "build", "construct", "design", "layout", "arrange", "organize",
+        "system", "feature", "function", "ability", "power", "skill", "attribute",
+        "stat", "property", "quality", "characteristic", "aspect", "element", "component",
+        "part", "piece", "unit", "module", "section", "segment", "portion", "fragment"
     }
     
     local lowerText = text:lower()
+    
+    -- 检查是否包含常见英文单词
     for _, word in ipairs(uiWords) do
         if lowerText:match("%f[%a]" .. word .. "%f[%A]") then
             return true
@@ -403,6 +415,11 @@ function shouldTranslate(text)
     
     -- 包含大写字母的文本（可能是标题）
     if text:match("%u") and #text >= 3 then
+        return true
+    end
+    
+    -- 最后，如果文本长度适中，也尝试翻译
+    if #text >= 3 and #text <= 50 then
         return true
     end
     
@@ -473,7 +490,7 @@ DebugTab:CreateButton({
            -- 双引号字符串
            for text in currentOriginalScript:gmatch('"([^"]*)"') do
                totalStrings = totalStrings + 1
-               if shouldTranslate(text) then
+               if improvedShouldTranslate(text) then
                    englishStrings = englishStrings + 1
                    if #exampleStrings < 5 then
                        table.insert(exampleStrings, "可翻译: \"" .. text .. "\"")
@@ -488,7 +505,7 @@ DebugTab:CreateButton({
            -- 单引号字符串
            for text in currentOriginalScript:gmatch("'([^']*)'") do
                totalStrings = totalStrings + 1
-               if shouldTranslate(text) then
+               if improvedShouldTranslate(text) then
                    englishStrings = englishStrings + 1
                    if #exampleStrings < 5 then
                        table.insert(exampleStrings, "可翻译: '" .. text .. "'")
@@ -590,7 +607,7 @@ DebugTab:CreateButton({
                Image = 4483362458,
            })
            
-           local translatedScript, translatedCount = newTranslateScript(currentOriginalScript)
+           local translatedScript, translatedCount = improvedTranslateScript(currentOriginalScript)
            
            -- 使用增强版修复转义序列问题
            translatedScript = fixEscapeSequencesEnhanced(translatedScript)
@@ -642,16 +659,16 @@ LogTab:CreateButton({
 -- 创建帮助标签页
 local HelpTab = Window:CreateTab("使用帮助", "help")
 
-HelpTab:CreateLabel("如果遇到转义序列错误:")
-HelpTab:CreateLabel("1. 点击'修复转义序列错误'按钮")
-HelpTab:CreateLabel("2. 点击'重新翻译脚本'按钮")
-HelpTab:CreateLabel("3. 检查脚本URL是否有效")
-HelpTab:CreateLabel("4. 尝试使用其他脚本URL")
+HelpTab:CreateLabel("如果仍然翻译0文本:")
+HelpTab:CreateLabel("1. 点击'分析当前脚本'查看原因")
+HelpTab:CreateLabel("2. 确保脚本URL有效且包含英文文本")
+HelpTab:CreateLabel("3. 尝试使用'测试翻译API'检查API状态")
+HelpTab:CreateLabel("4. 尝试不同的脚本URL")
 
 -- 初始化完成
 Rayfield:Notify({
-    Title = "XF外部脚本翻译器 - 转义修复版",
-    Content = "加载完成！使用增强版转义序列修复",
+    Title = "XF外部脚本翻译器 - 文本修复版",
+    Content = "加载完成！使用改进的文本识别逻辑",
     Duration = 3,
     Image = 4483362458,
 })
@@ -664,10 +681,10 @@ ResultDisplay:Set([[
 3. 查看翻译状态和结果
 4. 点击"执行翻译后的脚本"运行
 
-转义序列修复:
+改进特性:
+- 更宽松的文本识别条件
+- 扩展的词汇库
 - 增强版转义序列修复
-- 处理十六进制、八进制和Unicode转义
-- 清理所有无效转义字符
 - 保留所有现有功能
 ]])
 
