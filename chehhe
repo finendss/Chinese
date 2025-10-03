@@ -178,16 +178,23 @@ local function loadTranslatedScript(url, scriptName)
     end
 end
 
--- 创建窗口 - 使用更基础的配置
 local Window = WindUI:CreateWindow({
-    Title = "XF脚本翻译器",
-    Size = UDim2.fromOffset(500, 450),
+    Title = "XF汉化执行器 ",
+    IconThemed = true,
+    Icon = "star",
+    Author = "FIN Team",
+    Size = UDim2.fromOffset(400, 300),
+    Transparent = true,
     Theme = "Dark",
 })
 
--- 创建打开按钮
 Window:EditOpenButton({
-    Title = "打开翻译器",
+    Title = "打开执行器",
+    Icon = "monitor",
+    CornerRadius = UDim.new(0, 6),
+    StrokeThickness = 2,
+    Color = ColorSequence.new(Color3.fromRGB(30, 30, 30), Color3.fromRGB(255, 255, 255)),
+    Draggable = true,
 })
 
 -- 创建标签页 - 使用最简单的配置
