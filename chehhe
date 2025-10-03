@@ -197,14 +197,13 @@ Window:EditOpenButton({
     Draggable = true,
 })
 
--- 创建标签页 - 使用最简单的配置
-local MainTab = Window:Tab({
-    Title = "脚本翻译",
+local Tab = Window:Tab({
+    Title = "墨水游戏(ink game)",
+    Icon = "tree-pine",
+    Locked = false,
 })
 
--- 自定义脚本输入
-local customScriptUrl = ""
-MainTab:Textbox({
+local Textbox = Tab:Textbox({
     Title = "脚本URL",
     Desc = "输入英文脚本的URL地址",
     Default = "",
