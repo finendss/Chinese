@@ -1,209 +1,675 @@
-local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/CNHM/asg/refs/heads/main/wind%20ui.lua"))()
+-- 使用更稳定的UI库
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+-- 创建窗口
+local Window = Rayfield:CreateWindow({
+   Name = "XF外部脚本翻译器 - 转义修复版",
+   LoadingTitle = "加载中...",
+   LoadingSubtitle = "正在初始化转义修复版",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "XFTranslator",
+      FileName = "Config"
+   },
+   KeySystem = false,
+})
 
 local HttpService = game:GetService("HttpService")
+local currentTranslatedScript = ""
+local currentOriginalScript = ""
+local translationLog = {}
 
-local TARGET_LANGUAGE = "zh-CN"
-local translatedCache = {}
-
--- 检查是否为英文文本
-local function isEnglishText(text)
-    if not text or type(text) ~= "string" then return false end
-    if not text:match("[A-Za-z]") then
-        return false
-    end
-    if text:match("[\228-\233][\128-\191][\128-\191]") then
-        return false
-    end
-    return true
+-- 增强版转义序列修复函数 - 专门修复字符串转义问题
+function fixEscapeSequencesEnhanced(scriptCode)
+    local fixedScript = scriptCode
+    
+    -- 修复双引号字符串中的转义序列
+    fixedScript = fixedScript:gsub('(")([^"]*)(")', function(open, content, close)
+        -- 清理所有无效的转义序列
+        local cleaned = content:gsub("\\([^abfnrtv\\\"'0-9])", "%1")
+        
+        -- 修复十六进制转义序列
+        cleaned = cleaned:gsub("\\x(%x?%x?)", function(hex)
+            if #hex == 2 and tonumber(hex, 16) then
+                return "\\x" .. hex
+            else
+                return "x" .. (hex or "")
+            end
+        end)
+        
+        -- 修复八进制转义序列
+        cleaned = cleaned:gsub("\\([0-7][0-7]?[0-7]?)", function(octal)
+            if tonumber(octal, 8) and tonumber(octal, 8) <= 255 then
+                return "\\" .. octal
+            else
+                return octal
+            end
+        end)
+        
+        -- 修复Unicode转义序列
+        cleaned = cleaned:gsub("\\u(%x%x%x%x)", function(unicode)
+            if tonumber(unicode, 16) then
+                return "\\u" .. unicode
+            else
+                return "u" .. unicode
+            end
+        end)
+        
+        return open .. cleaned .. close
+    end)
+    
+    -- 修复单引号字符串中的转义序列
+    fixedScript = fixedScript:gsub("(')([^']*)(')", function(open, content, close)
+        -- 清理所有无效的转义序列
+        local cleaned = content:gsub("\\([^abfnrtv\\\"'0-9])", "%1")
+        
+        -- 修复十六进制转义序列
+        cleaned = cleaned:gsub("\\x(%x?%x?)", function(hex)
+            if #hex == 2 and tonumber(hex, 16) then
+                return "\\x" .. hex
+            else
+                return "x" .. (hex or "")
+            end
+        end)
+        
+        -- 修复八进制转义序列
+        cleaned = cleaned:gsub("\\([0-7][0-7]?[0-7]?)", function(octal)
+            if tonumber(octal, 8) and tonumber(octal, 8) <= 255 then
+                return "\\" .. octal
+            else
+                return octal
+            end
+        end)
+        
+        -- 修复Unicode转义序列
+        cleaned = cleaned:gsub("\\u(%x%x%x%x)", function(unicode)
+            if tonumber(unicode, 16) then
+                return "\\u" .. unicode
+            else
+                return "u" .. unicode
+            end
+        end)
+        
+        return open .. cleaned .. close
+    end)
+    
+    return fixedScript
 end
 
--- 检查是否需要跳过翻译
-local function shouldSkipTranslation(text)
-    if not text or text == "" or translatedCache[text] then
+-- 创建主标签页
+local MainTab = Window:CreateTab("外部脚本翻译", "folder")
+
+-- 创建URL输入框
+local UrlInput = MainTab:CreateInput({
+   Name = "脚本URL",
+   PlaceholderText = "输入英文脚本的URL地址...",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+       _G.ScriptUrl = Text
+   end,
+})
+
+-- 创建结果显示框
+local ResultDisplay = MainTab:CreateLabel("等待输入脚本URL...")
+
+-- 创建翻译按钮
+MainTab:CreateButton({
+   Name = "加载并翻译外部脚本",
+   Callback = function()
+       if not _G.ScriptUrl or _G.ScriptUrl == "" then
+           Rayfield:Notify({
+               Title = "错误",
+               Content = "请输入脚本URL",
+               Duration = 3,
+               Image = 4483362458,
+           })
+           return
+       end
+       
+       Rayfield:Notify({
+           Title = "开始加载",
+           Content = "正在加载外部脚本...",
+           Duration = 3,
+           Image = 4483362458,
+       })
+       
+       -- 加载并翻译外部脚本
+       loadAndTranslateExternalScript(_G.ScriptUrl)
+   end,
+})
+
+-- 创建执行按钮
+MainTab:CreateButton({
+   Name = "执行翻译后的脚本",
+   Callback = function()
+       if currentTranslatedScript and currentTranslatedScript ~= "" then
+           local success, err = pcall(function()
+               -- 在执行前使用增强版修复转义序列
+               local fixedScript = fixEscapeSequencesEnhanced(currentTranslatedScript)
+               
+               local fn, compileError = loadstring(fixedScript)
+               if not fn then
+                   error("编译错误: " .. tostring(compileError))
+               end
+               
+               -- 设置执行环境
+               setfenv(fn, getfenv())
+               
+               -- 执行脚本
+               local result = fn()
+               return result
+           end)
+           
+           if success then
+               Rayfield:Notify({
+                   Title = "执行成功",
+                   Content = "翻译后的脚本已执行",
+                   Duration = 3,
+                   Image = 4483362458,
+               })
+           else
+               -- 提取有用的错误信息
+               local errorMsg = tostring(err)
+               
+               Rayfield:Notify({
+                   Title = "执行失败",
+                   Content = "错误详情: " .. errorMsg,
+                   Duration = 10,
+                   Image = 4483362458,
+               })
+           end
+       else
+           Rayfield:Notify({
+               Title = "错误",
+               Content = "请先翻译一个脚本",
+               Duration = 3,
+               Image = 4483362458,
+           })
+       end
+   end,
+})
+
+-- 创建状态标签页
+local StatusTab = Window:CreateTab("翻译状态", "settings")
+local StatusDisplay = StatusTab:CreateLabel("状态: 等待开始")
+
+-- 加载并翻译外部脚本的函数
+function loadAndTranslateExternalScript(url)
+    StatusDisplay:Set("状态: 正在加载脚本...")
+    ResultDisplay:Set("正在加载脚本...")
+    
+    -- 加载外部脚本
+    local success, scriptContent = pcall(function()
+        local content = game:HttpGet(url)
+        if not content or content == "" then
+            error("获取的脚本内容为空")
+        end
+        return content
+    end)
+    
+    if not success then
+        StatusDisplay:Set("状态: 加载失败")
+        ResultDisplay:Set("脚本加载失败: " .. tostring(scriptContent))
+        Rayfield:Notify({
+            Title = "加载失败",
+            Content = "无法加载脚本: " .. tostring(scriptContent),
+            Duration = 6,
+            Image = 4483362458,
+        })
+        return
+    end
+    
+    -- 存储原始脚本
+    currentOriginalScript = scriptContent
+    
+    StatusDisplay:Set("状态: 脚本加载成功，开始翻译...")
+    ResultDisplay:Set("脚本加载成功，开始翻译...")
+    
+    -- 使用新的翻译函数
+    local translatedScript, translatedCount = newTranslateScript(scriptContent)
+    
+    -- 使用增强版修复转义序列问题
+    translatedScript = fixEscapeSequencesEnhanced(translatedScript)
+    
+    -- 存储翻译后的脚本
+    currentTranslatedScript = translatedScript
+    
+    -- 更新显示
+    StatusDisplay:Set("状态: 翻译完成 (" .. translatedCount .. "个文本)")
+    ResultDisplay:Set("翻译完成! 翻译了 " .. translatedCount .. " 个文本")
+    
+    -- 验证翻译后的脚本
+    local syntaxValid, syntaxError = pcall(function()
+        local fn, err = loadstring(currentTranslatedScript)
+        if not fn then
+            error("语法错误: " .. tostring(err))
+        end
+        return true
+    end)
+    
+    if syntaxValid then
+        Rayfield:Notify({
+            Title = "翻译完成",
+            Content = "成功翻译了 " .. translatedCount .. " 个文本，语法验证通过",
+            Duration = 3,
+            Image = 4483362458,
+        })
+    else
+        Rayfield:Notify({
+            Title = "翻译完成但有警告",
+            Content = "成功翻译了 " .. translatedCount .. " 个文本，但语法验证失败: " .. tostring(syntaxError),
+            Duration = 8,
+            Image = 4483362458,
+        })
+    end
+end
+
+-- 新的翻译函数 - 简化但更有效
+function newTranslateScript(scriptCode)
+    local translatedScript = scriptCode
+    local translatedCount = 0
+    translationLog = {}
+    
+    -- 收集所有字符串
+    local allStrings = {}
+    
+    -- 查找双引号字符串
+    for text in scriptCode:gmatch('"([^"]*)"') do
+        if text and text ~= "" and shouldTranslate(text) then
+            if not table.find(allStrings, text) then
+                table.insert(allStrings, text)
+            end
+        end
+    end
+    
+    -- 查找单引号字符串
+    for text in scriptCode:gmatch("'([^']*)'") do
+        if text and text ~= "" and shouldTranslate(text) then
+            if not table.find(allStrings, text) then
+                table.insert(allStrings, text)
+            end
+        end
+    end
+    
+    -- 按长度排序（长文本优先）
+    table.sort(allStrings, function(a, b)
+        return #a > #b
+    end)
+    
+    -- 翻译和替换
+    for i, originalText in ipairs(allStrings) do
+        local translatedText = translateTextSimple(originalText)
+        
+        if translatedText and translatedText ~= originalText then
+            -- 安全替换
+            local escapedText = escapeForPattern(originalText)
+            
+            -- 替换双引号
+            translatedScript = translatedScript:gsub('"' .. escapedText .. '"', '"' .. translatedText .. '"')
+            
+            -- 替换单引号
+            translatedScript = translatedScript:gsub("'" .. escapedText .. "'", "'" .. translatedText .. "'")
+            
+            translatedCount = translatedCount + 1
+            table.insert(translationLog, string.format("%d. %s → %s", i, originalText, translatedText))
+            StatusDisplay:Set("状态: 已翻译 " .. translatedCount .. " 个文本")
+        end
+    end
+    
+    return translatedScript, translatedCount
+end
+
+-- 简化的翻译判断
+function shouldTranslate(text)
+    if not text or text == "" then return false end
+    if #text < 2 then return false end
+    if #text > 200 then return false end
+    
+    -- 必须包含英文字母
+    if not text:match("[A-Za-z]") then return false end
+    
+    -- 不能包含中文
+    if text:match("[\228-\233][\128-\191][\128-\191]") then return false end
+    
+    -- 跳过纯数字
+    if text:match("^%d+$") then return false end
+    
+    -- 跳过URL
+    if text:match("https?://") or text:match("www%.") then return false end
+    
+    -- 跳过文件路径
+    if text:match("[%w_]-%.%a+$") then return false end
+    
+    -- 跳过看起来像变量名的文本
+    if text:match("^[%a_][%w_]*$") and #text < 25 then return false end
+    
+    -- 跳过数学表达式
+    if text:match("[%+%-%*/%%=]") and text:match("%d") then return false end
+    
+    -- 跳过代码结构
+    if text:match("function%s*%(") or 
+       text:match("if%s+") or 
+       text:match("for%s+") or 
+       text:match("while%s+") or
+       text:match("end%s*$") then
+        return false
+    end
+    
+    -- 常见UI词汇列表（扩展版）
+    local uiWords = {
+        -- 基础词汇
+        "the", "and", "for", "are", "but", "not", "you", "all", "can", "has", "was",
+        "out", "use", "who", "its", "may", "now", "way", "see", "how", "new", "get",
+        "any", "our", "man", "too", "day", "did", "get", "old", "say", "way", "how",
+        
+        -- UI元素
+        "button", "window", "tab", "label", "input", "slider", "toggle", "dropdown",
+        "color", "picker", "keybind", "section", "title", "name", "description",
+        "content", "text", "load", "save", "config", "setting", "option", "menu",
+        "enable", "disable", "on", "off", "true", "false", "yes", "no", "ok", "cancel",
+        "apply", "reset", "default", "custom", "advanced", "basic", "simple", "main",
+        
+        -- 动作词汇
+        "click", "press", "select", "choose", "open", "close", "start", "stop", "exit",
+        "back", "next", "previous", "first", "last", "up", "down", "left", "right",
+        "add", "remove", "delete", "create", "edit", "update", "refresh", "search",
+        "find", "filter", "sort", "order", "group", "category", "type", "value",
+        
+        -- 游戏相关
+        "player", "game", "script", "hub", "cheat", "exploit", "hack", "mod", "menu",
+        "gui", "interface", "panel", "frame", "box", "list", "item", "tool", "weapon",
+        "character", "avatar", "model", "part", "instance", "workspace", "lighting",
+        
+        -- 通知和消息
+        "notification", "message", "alert", "warning", "error", "success", "info",
+        "confirm", "prompt", "dialog", "popup", "modal", "tooltip", "hint", "tip",
+        
+        -- 其他常见词汇
+        "please", "wait", "loading", "processing", "complete", "finished", "done",
+        "ready", "active", "inactive", "visible", "hidden", "show", "hide", "display"
+    }
+    
+    local lowerText = text:lower()
+    for _, word in ipairs(uiWords) do
+        if lowerText:match("%f[%a]" .. word .. "%f[%A]") then
+            return true
+        end
+    end
+    
+    -- 如果包含空格，很可能是需要翻译的文本
+    if text:match("%s") and #text >= 3 then
         return true
     end
-    if text:match("^%s*$") or text:match("^[0-9%.%s,:/%%%-%=%+%*%(%)%[%]%{%}]+$") then
-        translatedCache[text] = text
+    
+    -- 包含大写字母的文本（可能是标题）
+    if text:match("%u") and #text >= 3 then
         return true
     end
-    if #text > 500 then
-        translatedCache[text] = text
-        return true
-    end
-    if not isEnglishText(text) then
-        translatedCache[text] = text
-        return true
-    end
-    if text:match("^[a-zA-Z_][a-zA-Z0-9_]*$") and #text < 30 then
-        translatedCache[text] = text
-        return true
-    end
+    
     return false
 end
 
--- 翻译函数
-local function translate(text)
-    if shouldSkipTranslation(text) then
-        return translatedCache[text] or text
-    end
+-- 转义模式字符
+function escapeForPattern(text)
+    return text:gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1")
+end
 
-    local success, response = pcall(function()
-        local url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" .. 
-                    TARGET_LANGUAGE .. "&dt=t&q=" .. HttpService:UrlEncode(text)
-        return game:HttpGet(url)
-    end)
-
-    if success and response then
-        local ok, data = pcall(HttpService.JSONDecode, HttpService, response)
-        if ok and data and data[1] then
-            local translatedText = ""
-            for _, segment in ipairs(data[1]) do
-                if segment[1] then
-                    translatedText = translatedText .. segment[1]
-                end
+-- 简化的翻译函数
+function translateTextSimple(text)
+    if not text or text == "" then return text end
+    
+    -- 使用MyMemory API
+    local success, translated = pcall(function()
+        local url = "https://api.mymemory.translated.net/get?q=" .. HttpService:UrlEncode(text) .. "&langpair=en|zh"
+        local response = game:HttpGet(url)
+        
+        if response then
+            local data = HttpService:JSONDecode(response)
+            if data and data.responseData and data.responseData.translatedText then
+                return data.responseData.translatedText
             end
-            if translatedText ~= "" and translatedText ~= text then
-                translatedCache[text] = translatedText
-                print("翻译成功: \"" .. text .. "\" -> \"" .. translatedText .. "\"")
+        end
+        return text
+    end)
+    
+    if success and translated and translated ~= text then
+        return translated
+    end
+    
+    -- 备用：Google翻译API
+    local backupSuccess, backupTranslated = pcall(function()
+        local url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=zh&dt=t&q=" .. HttpService:UrlEncode(text)
+        local response = game:HttpGet(url)
+        
+        if response then
+            -- 简单的JSON解析
+            local translatedText = response:match('%["([^"]*)",')
+            if translatedText and translatedText ~= "" then
                 return translatedText
             end
         end
+        return text
+    end)
+    
+    if backupSuccess and backupTranslated and backupTranslated ~= text then
+        return backupTranslated
     end
-
-    translatedCache[text] = text
+    
     return text
 end
 
--- 提取脚本中的英文文本
-local function extractEnglishText(scriptCode)
-    local texts = {}
-    
-    -- 匹配双引号字符串
-    for match in scriptCode:gsub('\\"', '##ESCAPED_QUOTE##'):gmatch('"(.-)"') do
-        local text = match:gsub('##ESCAPED_QUOTE##', '\\"')
-        if isEnglishText(text) and not shouldSkipTranslation(text) then
-            table.insert(texts, text)
-        end
-    end
-    
-    -- 匹配单引号字符串
-    for match in scriptCode:gsub("\\'", "##ESCAPED_QUOTE##"):gmatch("'(.-)'") do
-        local text = match:gsub("##ESCAPED_QUOTE##", "\\'")
-        if isEnglishText(text) and not shouldSkipTranslation(text) then
-            table.insert(texts, text)
-        end
-    end
-    
-    -- 匹配多行注释
-    for match in scriptCode:gmatch("%-%-%[%[(.-)%]%]") do
-        if isEnglishText(match) and not shouldSkipTranslation(match) then
-            table.insert(texts, match)
-        end
-    end
-    
-    -- 匹配单行注释
-    for match in scriptCode:gmatch("%-%-%s*(.-)\n") do
-        if isEnglishText(match) and not shouldSkipTranslation(match) then
-            table.insert(texts, match)
-        end
-    end
-    
-    return texts
-end
+-- 创建调试标签页
+local DebugTab = Window:CreateTab("调试工具", "settings")
 
--- 翻译脚本内容
-local function translateScript(scriptCode)
-    local translatedCode = scriptCode
-    
-    -- 提取所有需要翻译的文本
-    local textsToTranslate = extractEnglishText(scriptCode)
-    
-    -- 翻译每个文本并替换
-    for _, text in ipairs(textsToTranslate) do
-        local translatedText = translate(text)
-        if translatedText ~= text then
-            local escapedText = text:gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1")
-            translatedCode = translatedCode:gsub(escapedText, translatedText)
-        end
-    end
-    
-    return translatedCode
-end
-
--- 加载并翻译外部脚本
-local function loadTranslatedScript(url)
-    local success, scriptContent = pcall(function()
-        return game:HttpGet(url)
-    end)
-    
-    if success then
-        local translatedScript = translateScript(scriptContent)
-        local textCount = #extractEnglishText(scriptContent)
-        
-        -- 执行翻译后的脚本
-        local success, err = pcall(function()
-            loadstring(translatedScript)()
-        end)
-        
-        if success then
-            print("脚本翻译并执行成功！翻译了 " .. textCount .. " 个文本")
-        else
-            print("脚本执行失败: " .. tostring(err))
-        end
-    else
-        print("无法加载脚本: " .. url)
-    end
-end
-
--- 创建窗口
-local Window = WindUI:CreateWindow({
-    Title = "XF脚本翻译器",
-    IconThemed = true,
-    Icon = "star",
-    Author = "FIN Team",
-    Size = UDim2.fromOffset(400, 300),
-    Transparent = true,
-    Theme = "Dark",
+DebugTab:CreateButton({
+   Name = "分析当前脚本",
+   Callback = function()
+       if currentOriginalScript and currentOriginalScript ~= "" then
+           -- 分析脚本中的字符串
+           local totalStrings = 0
+           local englishStrings = 0
+           local exampleStrings = {}
+           
+           -- 双引号字符串
+           for text in currentOriginalScript:gmatch('"([^"]*)"') do
+               totalStrings = totalStrings + 1
+               if shouldTranslate(text) then
+                   englishStrings = englishStrings + 1
+                   if #exampleStrings < 5 then
+                       table.insert(exampleStrings, "可翻译: \"" .. text .. "\"")
+                   end
+               else
+                   if #exampleStrings < 8 then
+                       table.insert(exampleStrings, "跳过: \"" .. text .. "\"")
+                   end
+               end
+           end
+           
+           -- 单引号字符串
+           for text in currentOriginalScript:gmatch("'([^']*)'") do
+               totalStrings = totalStrings + 1
+               if shouldTranslate(text) then
+                   englishStrings = englishStrings + 1
+                   if #exampleStrings < 5 then
+                       table.insert(exampleStrings, "可翻译: '" .. text .. "'")
+                   end
+               else
+                   if #exampleStrings < 8 then
+                       table.insert(exampleStrings, "跳过: '" .. text .. "'")
+                   end
+               end
+           end
+           
+           local message = string.format("字符串分析:\n总字符串: %d\n可翻译: %d\n已翻译: %d\n\n示例:", 
+               totalStrings, englishStrings, #translationLog)
+           
+           for i, example in ipairs(exampleStrings) do
+               message = message .. "\n" .. example
+           end
+           
+           Rayfield:Notify({
+               Title = "脚本分析",
+               Content = message,
+               Duration = 12,
+               Image = 4483362458,
+           })
+       else
+           Rayfield:Notify({
+               Title = "错误",
+               Content = "没有可分析的脚本",
+               Duration = 3,
+               Image = 4483362458,
+           })
+       end
+   end,
 })
 
-Window:EditOpenButton({
-    Title = "打开翻译器",
-    Icon = "monitor",
-    CornerRadius = UDim.new(0, 6),
-    StrokeThickness = 2,
-    Color = ColorSequence.new(Color3.fromRGB(30, 30, 30), Color3.fromRGB(255, 255, 255)),
-    Draggable = true,
+DebugTab:CreateButton({
+   Name = "测试翻译API",
+   Callback = function()
+       local testCases = {
+           "Hello World",
+           "Open Menu",
+           "Player Settings",
+           "Click to activate",
+           "Enable feature",
+           "Close window",
+           "Save configuration"
+       }
+       
+       local results = {}
+       for i, text in ipairs(testCases) do
+           local translated = translateTextSimple(text)
+           table.insert(results, text .. " → " .. translated)
+           
+           -- 短暂延迟避免请求过快
+           wait(0.2)
+       end
+       
+       Rayfield:Notify({
+           Title = "API测试结果",
+           Content = table.concat(results, "\n"),
+           Duration = 10,
+           Image = 4483362458,
+       })
+   end,
 })
 
--- 脚本翻译标签页
-local Tab = Window:Tab({
-    Title = "脚本翻译",
-    Icon = "file-code",
-    Locked = false,
+DebugTab:CreateButton({
+   Name = "修复转义序列错误",
+   Callback = function()
+       if currentTranslatedScript and currentTranslatedScript ~= "" then
+           local fixedScript = fixEscapeSequencesEnhanced(currentTranslatedScript)
+           currentTranslatedScript = fixedScript
+           
+           Rayfield:Notify({
+               Title = "修复完成",
+               Content = "已使用增强版修复转义序列问题",
+               Duration = 3,
+               Image = 4483362458,
+           })
+       else
+           Rayfield:Notify({
+               Title = "错误",
+               Content = "没有可修复的脚本",
+               Duration = 3,
+               Image = 4483362458,
+           })
+       end
+   end,
 })
 
--- 自定义脚本输入
-local Textbox = Tab:Textbox({
-    Title = "脚本URL",
-    Desc = "输入英文脚本的URL地址",
-    Default = "",
-    Callback = function(text)
-        customScriptUrl = text
-    end
+DebugTab:CreateButton({
+   Name = "重新翻译脚本",
+   Callback = function()
+       if currentOriginalScript and currentOriginalScript ~= "" then
+           Rayfield:Notify({
+               Title = "重新翻译",
+               Content = "正在重新翻译脚本...",
+               Duration = 3,
+               Image = 4483362458,
+           })
+           
+           local translatedScript, translatedCount = newTranslateScript(currentOriginalScript)
+           
+           -- 使用增强版修复转义序列问题
+           translatedScript = fixEscapeSequencesEnhanced(translatedScript)
+           
+           currentTranslatedScript = translatedScript
+           
+           StatusDisplay:Set("状态: 重新翻译完成 (" .. translatedCount .. "个文本)")
+           ResultDisplay:Set("重新翻译完成! 翻译了 " .. translatedCount .. " 个文本")
+           
+           Rayfield:Notify({
+               Title = "重新翻译完成",
+               Content = "重新翻译了 " .. translatedCount .. " 个文本",
+               Duration = 3,
+               Image = 4483362458,
+           })
+       else
+           Rayfield:Notify({
+               Title = "错误",
+               Content = "没有原始脚本可供重新翻译",
+               Duration = 3,
+               Image = 4483362458,
+           })
+       end
+   end,
 })
 
-local Button = Tab:Button({
-    Title = "加载并翻译脚本",
-    Desc = "从URL加载脚本并翻译为中文",
-    Locked = false,
-    Callback = function()
-        if customScriptUrl and customScriptUrl ~= "" then
-            loadTranslatedScript(customScriptUrl)
-        else
-            print("请输入有效的脚本URL")
-        end
-    end
+-- 创建翻译日志标签页
+local LogTab = Window:CreateTab("翻译日志", "list")
+local LogDisplay = LogTab:CreateLabel("翻译日志将在这里显示...")
+
+LogTab:CreateButton({
+   Name = "刷新翻译日志",
+   Callback = function()
+       if #translationLog > 0 then
+           local displayText = "翻译日志 (" .. #translationLog .. " 个项目):\n\n"
+           for i = 1, math.min(20, #translationLog) do
+               displayText = displayText .. translationLog[i] .. "\n"
+           end
+           if #translationLog > 20 then
+               displayText = displayText .. "\n... 还有 " .. (#translationLog - 20) .. " 个项目"
+           end
+           LogDisplay:Set(displayText)
+       else
+           LogDisplay:Set("暂无翻译日志")
+       end
+   end,
 })
 
-print("XF脚本翻译器加载完成")
-print("功能: 自动翻译英文脚本为中文")
+-- 创建帮助标签页
+local HelpTab = Window:CreateTab("使用帮助", "help")
+
+HelpTab:CreateLabel("如果遇到转义序列错误:")
+HelpTab:CreateLabel("1. 点击'修复转义序列错误'按钮")
+HelpTab:CreateLabel("2. 点击'重新翻译脚本'按钮")
+HelpTab:CreateLabel("3. 检查脚本URL是否有效")
+HelpTab:CreateLabel("4. 尝试使用其他脚本URL")
+
+-- 初始化完成
+Rayfield:Notify({
+    Title = "XF外部脚本翻译器 - 转义修复版",
+    Content = "加载完成！使用增强版转义序列修复",
+    Duration = 3,
+    Image = 4483362458,
+})
+
+-- 显示使用说明
+ResultDisplay:Set([[
+使用说明:
+1. 在URL输入框中粘贴英文脚本的URL
+2. 点击"加载并翻译外部脚本"按钮
+3. 查看翻译状态和结果
+4. 点击"执行翻译后的脚本"运行
+
+转义序列修复:
+- 增强版转义序列修复
+- 处理十六进制、八进制和Unicode转义
+- 清理所有无效转义字符
+- 保留所有现有功能
+]])
+
+-- 初始刷新日志显示
+LogDisplay:Set("等待第一次翻译...")
